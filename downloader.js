@@ -29,7 +29,7 @@ const adAccountIds = [
 
 const accessToken = process.argv[2];
 const today = new Date().toISOString().replace(/T.*/,'').split('-').reverse().join('-');
-const fileName = `${today}.json`;
+const fileName = `${today}-data.json`;
 
 
 if (!accessToken) {

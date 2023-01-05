@@ -1,0 +1,13 @@
+{
+  "name": "data-extractor",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "type": "module" ,
+  "dependencies": {
+    "excel4node": "^1.8.0",
+    "exceljs": "^4.3.0",
+    "got": "^12.5.3",
+    "node-fetch": "^2.6.1"
+  }
+}
