@@ -18,7 +18,7 @@ const name = "./" + fileName.split(".")[0] + ".xlsx";
 
 /**
  *
- * @param {xl.Workbook} wb
+ * @param {typeof Workbook} wb
  */
 function getRowCount(ws) {
   const rows = ws.getColumn(1);
@@ -88,6 +88,7 @@ async function useWorkBook(wb) {
         const element = allData[key];
         console.log(key, alreadyExistedRow.number, element);
         row.getCell(key).value = element;
+        
       }
       row.commit();
     } else {
