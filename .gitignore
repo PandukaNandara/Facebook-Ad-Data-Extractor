@@ -131,3 +131,5 @@ dist
 
 *.xlsx
 *-data.json
+*.jpg
+*.png

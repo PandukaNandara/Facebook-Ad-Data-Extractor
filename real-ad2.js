@@ -1,6 +1,34 @@
 import excel from "exceljs";
 import minifyJson from "./minifyJson.js";
 import { fstat, readFileSync, unlinkSync } from "fs";
+import translate from '@saipulanuar/google-translate-api';
+import * as openai from "openai";
+
+
+const {OpenAIApi}  = openai;
+
+async function translateText(text, targetLanguage) {
+  const translation = await translate(text, {to: 'en' });
+  return translation;
+}
+
+// Set up OpenAI client
+const openaiApiKey = "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";
+
+const api = new OpenAIApi( new openai.Configuration({
+  apiKey: openaiApiKey
+}));
+async function categorizeText(text) {
+  const prompt = `Please categorize the following product description: \n\n"${text}"\n\nCategory:`;
+  
+  const completions = await api.createCompletion({
+    model: "text-davinci-002",
+    prompt,
+  });
+  const category = completions.data.choices[0].text.trim();
+  return category;
+}
+
 const Workbook = excel.Workbook;
 const today = new Date()
   .toISOString()
@@ -28,6 +56,7 @@ try {
  *
  * @param {typeof Workbook} wb
  */
+let count = 0;
 function getRowCount(ws) {
   const rows = ws.getColumn(1);
   const rowsCount = rows["_worksheet"]["_rows"].length;
@@ -45,6 +74,17 @@ async function useWorkBook(wb) {
     const { id, creative, created_time, insights } = dataRow ?? {};
     const { body, image_url, object_type, video_id = "" } = creative ?? {};
     const { data = [] } = insights ?? {};
+    if (body?.trim()?.length) {
+      const b = body?.trim();
+      count++;
+      const translatedText = await translateText(b, "en");
+      const category = await categorizeText(translatedText.text);
+      console.log(`Original text: ${b}`);
+      console.log(`Translated text: ${translatedText}`);
+      console.log(`Category: ${category}`);
+      console.log("---");
+    }
+    if (count > 10) return;
     for (let i = 0; i < data.length; i++) {
       const el = data[i];
       const { impressions, spend, clicks, frequency, reach, gender, age } = el;
