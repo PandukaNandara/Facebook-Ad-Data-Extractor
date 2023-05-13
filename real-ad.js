@@ -1,9 +1,10 @@
 import excel from "exceljs";
 import minifyJson from "./minifyJson.js";
 import { readFileSync } from "fs";
+import { uploadImage } from "./image_uploader.js";
 const Workbook = excel.Workbook;
 const today = new Date().toISOString().replace(/T.*/,'').split('-').reverse().join('-');
-const fileName = `${today}.json`;
+const fileName = `${today}-data.json`;
 
 let bufferData = readFileSync(fileName);
 let stData = bufferData.toString();
@@ -56,11 +57,13 @@ async function useWorkBook(wb) {
         }
       }
     }
+    const url = await uploadImage(image_url);
     const allData = {
       id,
       created_time,
       body,
-      image_url,
+      image_url: url,
+      image_url0: image_url,
       object_type,
       video_id,
       ...insightData,
